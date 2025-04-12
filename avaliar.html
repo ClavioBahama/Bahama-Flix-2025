@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Bahama Flix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+
+        .box {
+            position: relative;
+            color: white;
+            height: 300px;
+            width: 400px;
+            border-radius: 15px;
+            background: rgba(25, 25, 25, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+            overflow: hidden;
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(229, 9, 20, 0.1),
+                rgba(229, 9, 20, 0),
+                rgba(229, 9, 20, 0.1)
+            );
+            transform: rotate(30deg);
+            z-index: -1;
+        }
+
+        .box p {
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            color: #f8f8f8;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 250px;
+            gap: 20px;
+        }
+
+        .btn {
+            height: 45px;
+            width: 100px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-yes:active {
+            transform: translateY(1px);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #f44336, #c62828);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+            position: relative;
+        }
+
+        .btn-no:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn-no:active {
+            transform: translateY(1px);
+        }
+
+        .btn-back {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: confetti-fall 3s ease-in-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #e91e63;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <p>Gostou do Bahama Flix?</p>
+        <div class="buttons-container">
+            <button class="btn btn-yes" id="yes">
+                Sim 😊
+            </button>
+            <button class="btn btn-no" id="no">
+                Não 😞
+            </button>
+        </div>
+        <a href="index.html" class="btn btn-back">Voltar ao site</a>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no');
+        const yesBtn = document.getElementById('yes');
+        const box = document.querySelector('.box');
+        
+        // Configurações de animação para o botão "Não"
+        noBtn.addEventListener('mouseover', function() {
+            const boxRect = box.getBoundingClientRect();
+            const maxX = boxRect.width - this.offsetWidth;
+            const maxY = boxRect.height - this.offsetHeight;
+            
+            this.style.position = 'absolute';
+            this.style.left = Math.random() * maxX + 'px';
+            this.style.top = Math.random() * maxY + 'px';
+            
+            // Adiciona efeito de balanço
+            this.style.transform = 'translateY(-3px) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+        });
+        
+        noBtn.addEventListener('mouseout', function() {
+            // Volta à posição normal quando o mouse sai
+            setTimeout(() => {
+                this.style.position = 'relative';
+                this.style.left = 'auto';
+                this.style.top = 'auto';
+                this.style.transform = 'none';
+            }, 300);
+        });
+        
+        // Efeito especial quando clica em "Sim"
+        yesBtn.addEventListener('click', function() {
+            // Animação de pulsação
+            this.style.animation = 'pulse 0.5s ease 2';
+            
+            // Cria confetes
+            createConfetti();
+            createHearts();
+            
+            // Mensagem de agradecimento
+            setTimeout(() => {
+                box.innerHTML = `
+                    <p>Obrigado pelo feedback! ❤️</p>
+                    <p style="font-size: 16px; margin-top: 10px;">Volte sempre ao Bahama Flix!</p>
+                    <a href="index.html" class="btn btn-back" style="margin-top: 30px;">Voltar ao site</a>
+                `;
+            }, 1000);
+        });
+        
+        function createConfetti() {
+            const colors = ['#e91e63', '#00bcd4', '#ffeb3b', '#4caf50', '#2196f3'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                box.appendChild(confetti);
+                
+                // Remove após a animação
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+        
+        function createHearts() {
+            for (let i = 0; i < 10; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.bottom = '20px';
+                heart.style.animationDelay = i * 0.2 + 's';
+                box.appendChild(heart);
+                
+                // Remove após a animação
+                setTimeout(() => {
+                    heart.remove();
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+</html>
